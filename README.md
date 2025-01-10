@@ -11,7 +11,7 @@
    - Create their own virtual environment:
      ```bash
      python -m venv venv
-     source venv/bin/activate  # Or: venv\Scripts\activate on Windows
+     venv\Scripts\activate on Windows
      ```
 
    - Install dependencies:
