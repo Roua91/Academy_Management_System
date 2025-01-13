@@ -8,22 +8,33 @@ Purpose:
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import os
 
-# Initialize extensions
+# Initialize SQLAlchemy
 db = SQLAlchemy()
 
 def create_app():
-    app = Flask(__name__)
-    
-    # Set up app configurations
-    app.config['SECRET_KEY'] = 'your_secret_key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # Path to the SQLite database
+    # Create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
 
-    # Initialize extensions
+    # Ensure instance folder exists
+    os.makedirs(app.instance_path, exist_ok=True)
+
+    # Configuration for the application
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(app.instance_path, 'academy.db')}"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
+
+    # Initialize the database with the app directly
+    global db
     db.init_app(app)
 
-    # Register blueprints (if any)
-    from app.routes import main_routes
+    # Initialize database tables within the app context
+    with app.app_context():
+        db.create_all()
+
+    # Register blueprints
+    from app.routes.main_routes import main_routes
     app.register_blueprint(main_routes)
 
     return app
