@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_man.css') }}">
+    <title>Students Management</title>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="logo">KD Academy</div>
+        <div class="user-info">
+            <span>Admins Name</span>
+            <span>Admin</span>
+            <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Admin Icon">
+        </div>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <div class="side-nav">
+        <a href="{{ url_for('admin_routes.admin_dashboard') }}">Admins Dashboard</a>
+        <a href="{{ url_for('admin_routes.students_management') }}" class="active">Students Management</a>
+        <a href="{{ url_for('admin_routes.teachers_management') }}">Teachers Management</a>
+        <a href="{{ url_for('admin_routes.courses_management') }}">Courses Management</a>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="title-section">
+                <h2>Students Management</h2>
+                <p>Manage all student records, including their enrollment, attendance, and grades.</p>
+            </div>
+            <!-- Add Student Button -->
+            <button class="action-btn add-btn" onclick="openModal()">+ Add Student</button>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-container">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Grade Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic Student Data -->
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.Student.student_id }}</td>
+                        <td>{{ student.User.first_name }} {{ student.User.last_name }}</td>
+                        <td>Grade {{ student.Student.grade_level }}</td>
+                        <td>
+                            <button class="action-btn update-btn" onclick="updateStudent({{ student.Student.student_id }})">Update</button>
+                            <button class="action-btn delete-btn" onclick="deleteStudent({{ student.Student.student_id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Student -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Student</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <form action="{{ url_for('admin_routes.add_student') }}" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="grade_level">Grade Level</label>
+                    <input type="text" id="grade_level" name="grade_level" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Functions -->
+    <script>
+        const modal = document.getElementById('addStudentModal');
+
+        function openModal() {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

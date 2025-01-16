@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_man.css') }}">
+    <title>Teachers Management</title>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="logo">KD Academy</div>
+        <div class="user-info">
+            <span>Admins Name</span>
+            <span>Admin</span>
+            <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Admin Icon">
+        </div>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href ="{{url_for('admin_routes.admin_dashboard') }}"> Admin Dashboard </a></li>
+            <li><a href="{{ url_for('admin_routes.students_management') }}">Manage Students</a></li>
+            <li><a href="{{ url_for('admin_routes.teachers_management') }}">Manage Teachers</a></li>
+            <li><a href="{{ url_for('admin_routes.courses_management') }}">Manage Courses</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="title-section">
+                <h2>Teachers Management</h2>
+                <p>Manage all teacher records, including their information, assigned courses, and specializations.</p>
+            </div>
+            <!-- Add Teacher Button -->
+            <button class="action-btn add-btn" onclick="openAddTeacherModal()">+ Add Teacher</button>
+        </div>
+
+        <!-- Teachers Table -->
+        <div class="table-container">
+            <table class="teachers-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Specialization</th>
+                        <th>Hire Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic Teacher Data -->
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ teacher.Teacher.teacher_id }}</td>
+                        <td>{{ teacher.User.first_name }} {{ teacher.User.last_name }}</td>
+                        <td>{{ teacher.Teacher.specialization }}</td>
+                        <td>{{ teacher.Teacher.hire_date }}</td>
+                        <td>
+                            <button class="action-btn update-btn" onclick="updateTeacher({{ teacher.Teacher.teacher_id }})">Update</button>
+                            <button class="action-btn delete-btn" onclick="deleteTeacher({{ teacher.Teacher.teacher_id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div id="addTeacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Teacher</h3>
+                <span class="close" onclick="closeAddTeacherModal()">&times;</span>
+            </div>
+            <form action="{{ url_for('admin_routes.add_teacher') }}" method="POST">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization" required>
+                </div>
+                <div class="form-group">
+                    <label for="hire_date">Hire Date</label>
+                    <input type="date" id="hire_date" name="hire_date" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddTeacherModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Teacher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Functions -->
+    <script>
+        // Open the Add Teacher Modal
+        function openAddTeacherModal() {
+            document.getElementById('addTeacherModal').style.display = 'block';
+        }
+
+        // Close the Add Teacher Modal
+        function closeAddTeacherModal() {
+            document.getElementById('addTeacherModal').style.display = 'none';
+        }
+
+        function updateTeacher(id) {
+            window.location.href = '/admin/teachers/update/' + id;
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                // Redirect to the delete route
+                window.location.href = '/admin/teachers/delete/' + id;
+            }
+        }
+    </script>
+</body>
+</html>

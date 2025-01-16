@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shared.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="logo">KD Academy</div>
+        <div class="user-info">
+            <span>{{ admin_name }}</span>
+            <span>Admin</span>
+            <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Admin Icon">
+        </div>
+    </header>
 
+    <!-- Side Navigation Bar -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href="{{ url_for('admin_routes.students_management') }}">Manage Students</a></li>
+            <li><a href="{{ url_for('admin_routes.teachers_management') }}">Manage Teachers</a></li>
+            <li><a href="{{ url_for('admin_routes.courses_management') }}">Manage Courses</a></li>
+        </ul>
+    </nav>
+    
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Left Content Section -->
+        <section class="content-left">
+            <div class="info-card">
+                <a href="{{ url_for('admin_routes.students_management') }}">
+                    <img src="{{ url_for('static', filename='images/student.jpg') }}" alt="Student Icon">
+                </a>
+                <p>Manage all student records, including their enrollment, attendance, and grades.</p>
+            </div>
+            <div class="info-card">
+                <a href="{{ url_for('admin_routes.teachers_management') }}">
+                    <img src="{{ url_for('static', filename='images/teacher.jpg') }}" alt="Teacher Icon">
+                </a>
+                <p>Oversee teacher information, including specialization and assigned courses.</p>
+            </div>
+            <div class="info-card">
+                <a href="{{ url_for('admin_routes.courses_management') }}">
+                    <img src="{{ url_for('static', filename='images/course.jpg') }}" alt="Course Icon">
+                </a>
+                <p>Manage course offerings, assign teachers, and view enrolled students.</p>
+            </div>
+        </section>
+
+        <!-- Right Content Section -->
+        <section class="content-right">
+            <div class="calendar">
+                <h4>Calendar</h4>
+                <div id="calendar"></div>
+            </div>
+            <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+
+            <div class="activities">
+                <h4>Upcoming Events</h4>
+                <ul>
+                    {% if events %}
+                        {% for event in events %}
+                        <li>
+                            <strong>{{ event.date }}:</strong> {{ event.description }}
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No upcoming events</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

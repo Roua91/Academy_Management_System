@@ -1,0 +1,148 @@
+/* Left Content */
+.content-left {
+    width: 60%;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: row; /* Align items side by side */
+    justify-content: space-between; /* Add space between main sections */
+    align-items: flex-start; /* Align items at the top */
+    margin-left: 200px; /* Account for the side navigation bar */
+    padding: 15px;
+}
+
+/* Right Content */
+.content-right {
+    width: 25%;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 15px;
+}
+
+/* Calendar Section */
+.content-right {
+    flex: 1; /* Takes up 1/3 of the space */
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center-align the calendar content */
+}
+
+/* Info Cards */
+.info-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.info-card:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
+}
+
+.info-card img {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.info-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Calendar Styling */
+.calendar {
+    padding: 0;
+    text-align: center;
+    width: auto;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 equal columns */
+    gap: 5px;
+    margin-top: 10px;
+}
+
+#calendar .day {
+    padding: 5px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 12px;
+    height: 40px;
+    line-height: 40px;
+}
+
+#calendar .day.today {
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+}
+
+/* Activities Section */
+.activities {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    font-size: 14px;
+}
+
+.activities h4 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.activities ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activities li {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.activities li strong {
+    color: #007BFF;
+}
+
+
+
+
+/* Content Section (e.g., Cards) */
+.content-left {
+    flex: 2; /* Takes up 2/3 of the space */
+    margin-right: 20px; /* Add some space between content and calendar */
+}
+
+
+/* Calendar Section */
+.content-right {
+    flex: 1; /* Takes up 1/3 of the space */
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center-align the calendar content */
+}
