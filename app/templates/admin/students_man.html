@@ -19,12 +19,14 @@
     </header>
 
     <!-- Side Navigation Bar -->
-    <div class="side-nav">
-        <a href="{{ url_for('admin_routes.admin_dashboard') }}">Admins Dashboard</a>
-        <a href="{{ url_for('admin_routes.students_management') }}" class="active">Students Management</a>
-        <a href="{{ url_for('admin_routes.teachers_management') }}">Teachers Management</a>
-        <a href="{{ url_for('admin_routes.courses_management') }}">Courses Management</a>
-    </div>
+    <nav class="side-nav">
+        <ul>
+            <li><a href="{{ url_for('admin_routes.admin_dashboard') }}">Admin Dashboard</a></li>
+            <li><a href="{{ url_for('admin_routes.students_management') }}" class="active">Manage Students</a></li>
+            <li><a href="{{ url_for('admin_routes.teachers_management') }}">Manage Teachers</a></li>
+            <li><a href="{{ url_for('admin_routes.courses_management') }}">Manage Courses</a></li>
+        </ul>
+    </nav>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -35,7 +37,7 @@
                 <p>Manage all student records, including their enrollment, attendance, and grades.</p>
             </div>
             <!-- Add Student Button -->
-            <button class="action-btn add-btn" onclick="openModal()">+ Add Student</button>
+            <button class="add-btn" onclick="openAddStudentModal()">+ Add Student</button>
         </div>
 
         <!-- Students Table -->
@@ -50,15 +52,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dynamic Student Data -->
                     {% for student in students %}
                     <tr>
                         <td>{{ student.Student.student_id }}</td>
                         <td>{{ student.User.first_name }} {{ student.User.last_name }}</td>
                         <td>Grade {{ student.Student.grade_level }}</td>
                         <td>
-                            <button class="action-btn update-btn" onclick="updateStudent({{ student.Student.student_id }})">Update</button>
-                            <button class="action-btn delete-btn" onclick="deleteStudent({{ student.Student.student_id }})">Delete</button>
+                            <button class="action-btn update-btn" onclick="openUpdateStudentModal({{ student.Student.student_id }})">Update</button>
+                            <form action="{{ url_for('admin_routes.delete_student', student_id=student.Student.student_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="action-btn delete-btn">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -67,41 +70,51 @@
         </div>
     </div>
 
-    <!-- Modal for Adding Student -->
+    <!-- Add Student Modal -->
     <div id="addStudentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Add Student</h3>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <span class="close-btn" onclick="closeAddStudentModal()">&times;</span>
             </div>
             <form action="{{ url_for('admin_routes.add_student') }}" method="POST">
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required>
                 </div>
                 <div class="form-group">
                     <label for="grade_level">Grade Level</label>
                     <input type="text" id="grade_level" name="grade_level" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddStudentModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Student</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript Functions -->
+    <!-- JavaScript -->
     <script>
-        const modal = document.getElementById('addStudentModal');
+        const addStudentModal = document.getElementById('addStudentModal');
 
-        function openModal() {
-            modal.style.display = 'flex';
+        function openAddStudentModal() {
+            addStudentModal.style.display = 'flex';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
+        function closeAddStudentModal() {
+            addStudentModal.style.display = 'none';
         }
+
+        window.onclick = function (event) {
+            if (event.target === addStudentModal) {
+                closeAddStudentModal();
+            }
+        };
     </script>
 </body>
 </html>

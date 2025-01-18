@@ -12,7 +12,7 @@
     <header class="top-nav">
         <div class="logo">KD Academy</div>
         <div class="user-info">
-            <span>{{ admin_name }}</span>
+            <span>Admins Name</span>
             <span>Admin</span>
             <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="Admin Icon">
         </div>
@@ -21,6 +21,7 @@
     <!-- Side Navigation Bar -->
     <nav class="side-nav">
         <ul>
+            <li><a href ="{{url_for('admin_routes.admin_dashboard') }}" class="active"> Admin Dashboard </a></li>
             <li><a href="{{ url_for('admin_routes.students_management') }}">Manage Students</a></li>
             <li><a href="{{ url_for('admin_routes.teachers_management') }}">Manage Teachers</a></li>
             <li><a href="{{ url_for('admin_routes.courses_management') }}">Manage Courses</a></li>

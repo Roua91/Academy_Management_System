@@ -23,70 +23,94 @@ def students_management():
         return render_template('admin/students_man.html', students=students)
     except Exception as e:
         print(f"Error fetching students: {e}")
-        return "Error loading Students Management Page", 500
+        flash("Error loading Students Management Page.", "error")
 
 
-''''
-@admin_routes.route('/students/add', methods=['GET', 'POST'])
+@admin_routes.route('/students/add', methods=['POST'])
 def add_student():
-    if request.method == 'POST':
+    try:
+        # Retrieve form data
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         grade_level = request.form.get('grade_level')
 
-        # Add user and student
+        # Validate form data
+        if not first_name or not last_name or not grade_level:
+            flash("All fields are required to add a student.", "error")
+            return redirect(url_for('admin_routes.students_management'))
+
+        # Add user and student records
         user = User(first_name=first_name, last_name=last_name, role='student')
         db.session.add(user)
-        db.session.flush()  # Get user_id for the student
+        db.session.flush()  # Get user_id after insertion
 
         student = Student(user_id=user.user_id, grade_level=grade_level)
         db.session.add(student)
+        db.session.commit()
 
-        try:
-            db.session.commit()
-            flash('Student added successfully!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error adding student. Please try again.', 'error')
+        flash('Student added successfully!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error adding student. Please try again.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error adding student: {e}")
+        flash('Unexpected error occurred. Please try again.', 'error')
 
-        return redirect(url_for('admin_routes.students_management'))
-
-    return render_template('add_student.html')
+    return redirect(url_for('admin_routes.students_management'))
 
 
-@admin_routes.route('/students/update/<int:student_id>', methods=['GET', 'POST'])
+@admin_routes.route('/students/update/<int:student_id>', methods=['POST'])
 def update_student(student_id):
-    student = db.session.query(Student, User).join(User, Student.user_id == User.user_id).filter(Student.student_id == student_id).first()
+    try:
+        # Fetch the student record
+        student = db.session.query(Student, User).join(User, Student.user_id == User.user_id).filter(
+            Student.student_id == student_id).first()
 
-    if request.method == 'POST':
+        if not student:
+            flash("Student not found.", "error")
+            return redirect(url_for('admin_routes.students_management'))
+
+        # Update student and user fields
         student.User.first_name = request.form.get('first_name')
         student.User.last_name = request.form.get('last_name')
         student.Student.grade_level = request.form.get('grade_level')
 
-        try:
-            db.session.commit()
-            flash('Student updated successfully!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error updating student. Please try again.', 'error')
+        db.session.commit()
+        flash('Student updated successfully!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error updating student. Please try again.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating student: {e}")
+        flash('Unexpected error occurred. Please try again.', 'error')
 
-        return redirect(url_for('admin_routes.students_management'))
+    return redirect(url_for('admin_routes.students_management'))
 
-    return render_template('update_student.html', student=student)
-'''
 
 @admin_routes.route('/students/delete/<int:student_id>', methods=['POST'])
 def delete_student(student_id):
-    student = Student.query.get(student_id)
-    if student:
+    try:
+        # Fetch the student record
+        student = Student.query.get(student_id)
+        if not student:
+            flash("Student not found.", "error")
+            return redirect(url_for('admin_routes.students_management'))
+
+        # Delete student and associated user
         db.session.delete(student)
         db.session.delete(User.query.get(student.user_id))
-        try:
-            db.session.commit()
-            flash('Student deleted successfully!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error deleting student. Please try again.', 'error')
+        db.session.commit()
+
+        flash('Student deleted successfully!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error deleting student. Please try again.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting student: {e}")
+        flash('Unexpected error occurred. Please try again.', 'error')
 
     return redirect(url_for('admin_routes.students_management'))
 
@@ -127,7 +151,7 @@ def add_teacher():
 
     return redirect(url_for('admin_routes.teachers_management'))
 
-'''
+
 @admin_routes.route('/teachers/update/<int:teacher_id>', methods=['GET', 'POST'])
 def update_teacher(teacher_id):
     teacher = db.session.query(Teacher, User).join(User, Teacher.user_id == User.user_id).filter(Teacher.teacher_id == teacher_id).first()
@@ -147,7 +171,7 @@ def update_teacher(teacher_id):
         return redirect(url_for('admin_routes.teachers_management'))
 
     return render_template('update_teacher.html', teacher=teacher)
-'''
+
 
 @admin_routes.route('/teachers/delete/<int:teacher_id>', methods=['POST'])
 def delete_teacher(teacher_id):
@@ -168,10 +192,19 @@ def delete_teacher(teacher_id):
 # ------------------------------
 # Courses Management
 # ------------------------------
-@admin_routes.route('/courses')
+@admin_routes.route('/courses', methods=['GET'])
 def courses_management():
-    courses = Course.query.all()
-    return render_template('courses.html', courses=courses)
+    try:
+        # Fetch courses and join them with teachers and their users
+        courses = db.session.query(Course, Teacher).join(Teacher, Course.teacher_id == Teacher.teacher_id).all()
+
+        # Fetch teachers and ensure their user relationship is loaded
+        teachers = Teacher.query.options(db.joinedload(Teacher.user)).all()
+
+        return render_template('admin/courses_man.html', courses=courses, teachers=teachers)
+    except Exception as e:
+        print(f"Error fetching courses: {e}")
+        return "Error loading Courses Management Page", 500
 
 
 @admin_routes.route('/courses/add', methods=['GET', 'POST'])

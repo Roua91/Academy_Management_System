@@ -28,6 +28,17 @@ class Teacher(db.Model):
     specialization = db.Column(db.String(100), nullable=False)
     hire_date = db.Column(db.Date, nullable=False)
 
+    # Relationship to User
+    user = db.relationship('User', backref='teacher')
+    
+    @property
+    def first_name(self):
+        return self.user.first_name
+    
+    @property
+    def last_name(self):
+        return self.user.last_name
+    
 # Admins model
 class Admin(db.Model):
     __tablename__ = 'admins'
