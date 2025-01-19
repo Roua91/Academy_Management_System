@@ -61,8 +61,21 @@
                         <td>{{ teacher.Teacher.specialization }}</td>
                         <td>{{ teacher.Teacher.hire_date }}</td>
                         <td>
-                            <button class="action-btn update-btn" onclick="updateTeacher({{ teacher.Teacher.teacher_id }})">Update</button>
-                            <button class="action-btn delete-btn" onclick="deleteTeacher({{ teacher.Teacher.teacher_id }})">Delete</button>
+                            <button class="action-btn update-btn" onclick="openUpdateTeacherModal({
+                                teacher_id: {{ teacher.Teacher.teacher_id }},
+                                first_name: '{{ teacher.User.first_name }}',
+                                last_name: '{{ teacher.User.last_name }}',
+                                username: '{{ teacher.User.username }}',
+                                email: '{{ teacher.User.email }}',
+                                password: '{{ teacher.User.password }}', <!-- Avoid raw passwords in production -->
+                                specialization: '{{ teacher.Teacher.specialization }}',
+                                hire_date: '{{ teacher.Teacher.hire_date }}'
+                            })">Update</button>
+
+                            <button class="action-btn delete-btn" onclick="confirmDeleteTeacher({{ teacher.Teacher.teacher_id }})">Delete</button>
+                            <form id="deleteTeacherForm" method="POST" style="display: none;">
+                                <input type="hidden" id="deleteTeacherId" name="teacher_id">
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -115,6 +128,51 @@
         </div>
     </div>
 
+    <!-- Update Teacher Modal -->
+    <div id="updateTeacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Teacher</h3>
+                <span class="close" onclick="closeUpdateTeacherModal()">&times;</span>
+            </div>
+            <form id="updateTeacherForm" method="POST">
+                <div class="form-group">
+                    <label for="update_first_name">First Name</label>
+                    <input type="text" id="update_first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_last_name">Last Name</label>
+                    <input type="text" id="update_last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_username">Username</label>
+                    <input type="text" id="update_username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_email">Email</label>
+                    <input type="email" id="update_email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_password">Password</label>
+                    <input type="password" id="update_password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_specialization">Specialization</label>
+                    <input type="text" id="update_specialization" name="specialization" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_hire_date">Hire Date</label>
+                    <input type="date" id="update_hire_date" name="hire_date" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUpdateTeacherModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Teacher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <!-- JavaScript Functions -->
     <script>
         // Open the Add Teacher Modal
@@ -127,16 +185,46 @@
             document.getElementById('addTeacherModal').style.display = 'none';
         }
 
-        function updateTeacher(id) {
-            window.location.href = '/admin/teachers/update/' + id;
+        
+        // Select the modal and form
+        const updateTeacherModal = document.getElementById('updateTeacherModal');
+        const updateTeacherForm = document.getElementById('updateTeacherForm');
+    
+        // Open the Update Modal and populate fields
+        function openUpdateTeacherModal(teacher) {
+            document.getElementById('update_first_name').value = teacher.first_name;
+            document.getElementById('update_last_name').value = teacher.last_name;
+            document.getElementById('update_username').value = teacher.username;
+            document.getElementById('update_email').value = teacher.email;
+            document.getElementById('update_password').value = teacher.password;
+            document.getElementById('update_specialization').value = teacher.specialization;
+            document.getElementById('update_hire_date').value = teacher.hire_date;
+        
+            // Set the form action dynamically
+            updateTeacherForm.action = `/admin/teachers/update/${teacher.teacher_id}`;
+            updateTeacherModal.style.display = 'block';
         }
-
-        function deleteTeacher(id) {
-            if (confirm('Are you sure you want to delete this teacher?')) {
-                // Redirect to the delete route
-                window.location.href = '/admin/teachers/delete/' + id;
+        
+        // Close the Update Modal
+        function closeUpdateTeacherModal() {
+            updateTeacherModal.style.display = 'none';
+        }
+        
+        // Close modal if user clicks outside it
+        window.onclick = function (event) {
+            if (event.target === updateTeacherModal) {
+                closeUpdateTeacherModal();
             }
-        }
+        };
+        
+
+        function confirmDeleteTeacher(teacherId) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                const deleteForm = document.getElementById('deleteTeacherForm');
+                deleteForm.action = `/admin/teachers/delete/${teacherId}`;
+                deleteForm.submit();
+            }
+        }        
     </script>
 </body>
 </html>

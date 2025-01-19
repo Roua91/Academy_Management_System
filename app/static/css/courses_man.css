@@ -25,12 +25,13 @@
     color: #555;
 }
 
+
 .table-container {
     margin-top: 20px;
-    background-color: #fff;
+    overflow-x: auto;
+    background-color: white;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .courses-table {
@@ -46,12 +47,57 @@
 }
 
 .courses-table th {
-    background-color: #f4f4f4;
+    background-color: #f8f9fa;
     font-weight: bold;
+    color: #333;
 }
 
 .courses-table tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 5px 5px;
+    font-size: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn.update-btn {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+.action-btn.update-btn:hover {
+    background-color: #0056b3;
+}
+
+.action-btn.delete-btn {
+    background-color: #FF4D4D;
+    color: #fff;
+}
+
+.action-btn.delete-btn:hover {
+    background-color: #cc0000;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+    background-color: #218838;
 }
 
 

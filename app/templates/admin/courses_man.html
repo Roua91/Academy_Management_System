@@ -72,7 +72,12 @@
                     <td>{{ teacher.first_name }} {{ teacher.last_name }}</td>
                     <td>
                         <!-- Actions: Update or Delete Course -->
-                        <button class="action-btn update-btn" onclick="updateCourse({{ course.course_id }})">Update</button>
+                        <button class="action-btn update-btn" onclick="openUpdateCourseModal(
+                            {{ course.course_id }}, 
+                            '{{ course.course_name }}', 
+                            '{{ course.grade_level }}', 
+                            {{ course.teacher_id }})">Update </button>
+
                         <form action="{{ url_for('admin_routes.delete_course', course_id=course.course_id) }}" method="POST" style="display:inline;">
                             <button type="submit" class="action-btn delete-btn">Delete</button>
                         </form>
@@ -114,6 +119,39 @@
             </form>
         </div>
     </div>
+
+    <!-- Update Course Modal -->
+    <div id="updateCourseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Course</h3>
+                <span class="close-btn" onclick="closeUpdateCourseModal()">&times;</span>
+            </div>
+            <form id="updateCourseForm" method="POST">
+                <div class="form-group">
+                    <label for="update_course_name">Course Name</label>
+                    <input type="text" id="update_course_name" name="course_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_grade_level">Grade Level</label>
+                    <input type="text" id="update_grade_level" name="grade_level" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_teacher_id">Assigned Teacher</label>
+                    <select id="update_teacher_id" name="teacher_id" required>
+                        {% for teacher in teachers %}
+                        <option value="{{ teacher.teacher_id }}">{{ teacher.first_name }} {{ teacher.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUpdateCourseModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
                 
 
     <!-- JavaScript -->
@@ -135,6 +173,33 @@
         window.onclick = function (event) {
             if (event.target === addCourseModal) {
                 closeAddCourseModal();
+            }
+        };
+
+        // Select the modal and form
+        const updateCourseModal = document.getElementById('updateCourseModal');
+        const updateCourseForm = document.getElementById('updateCourseForm');
+
+        // Open the Update Modal and populate fields
+        function openUpdateCourseModal(courseId, courseName, gradeLevel, teacherId) {
+            document.getElementById('update_course_name').value = courseName;
+            document.getElementById('update_grade_level').value = gradeLevel;
+            document.getElementById('update_teacher_id').value = teacherId;
+
+            // Set the form action dynamically
+            updateCourseForm.action = `/admin/courses/update/${courseId}`;
+            updateCourseModal.style.display = 'flex'; // Show modal
+        }
+
+        // Close the Update Modal
+        function closeUpdateCourseModal() {
+            updateCourseModal.style.display = 'none';
+        }
+
+        // Close modal if user clicks outside the modal content
+        window.onclick = function (event) {
+            if (event.target === updateCourseModal) {
+                closeUpdateCourseModal();
             }
         };
     </script>

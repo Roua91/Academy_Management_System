@@ -53,7 +53,10 @@
                 </thead>
                 <tbody>
                     {% for student in students %}
-                    <tr>
+                    <tr id="student-{{ student.Student.student_id }}" 
+                        data-first-name="{{ student.User.first_name }}" 
+                        data-last-name="{{ student.User.last_name }}" 
+                        data-grade-level="{{ student.Student.grade_level }}">
                         <td>{{ student.Student.student_id }}</td>
                         <td>{{ student.User.first_name }} {{ student.User.last_name }}</td>
                         <td>Grade {{ student.Student.grade_level }}</td>
@@ -65,7 +68,7 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
+                </tbody>                
             </table>
         </div>
     </div>
@@ -94,12 +97,70 @@
                     <button type="button" class="btn btn-secondary" onclick="closeAddStudentModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Student</button>
                 </div>
+            </form>            
+        </div>
+    </div>
+
+    <!-- Update Student Modal -->
+    <div id="updateStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Student</h3>
+                <span class="close-btn" onclick="closeUpdateStudentModal()">&times;</span>
+            </div>
+            <form id="updateStudentForm" method="POST">
+                <div class="form-group">
+                    <label for="update_first_name">First Name</label>
+                    <input type="text" id="update_first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_last_name">Last Name</label>
+                    <input type="text" id="update_last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="update_grade_level">Grade Level</label>
+                    <input type="text" id="update_grade_level" name="grade_level" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeUpdateStudentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Student</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
+        // Update Student Modal and Form
+        const updateStudentModal = document.getElementById('updateStudentModal');
+        const updateStudentForm = document.getElementById('updateStudentForm');
+
+        // Open the Update Modal
+        function openUpdateStudentModal(studentId) {
+            // Get the student row by ID
+            const student = document.getElementById(`student-${studentId}`);
+
+            if (!student) {
+                alert("Error: Student data not found!");
+                return;
+            }
+
+            // Populate modal fields with student data
+            document.getElementById('update_first_name').value = student.dataset.firstName;
+            document.getElementById('update_last_name').value = student.dataset.lastName;
+            document.getElementById('update_grade_level').value = student.dataset.gradeLevel;
+
+            // Set the form's action URL dynamically
+            updateStudentForm.action = `/admin/students/update/${studentId}`;
+            updateStudentModal.style.display = 'block';
+        }
+
+        // Close the Update Modal
+        function closeUpdateStudentModal() {
+            updateStudentModal.style.display = 'none';
+        }
+
+
+
         const addStudentModal = document.getElementById('addStudentModal');
 
         function openAddStudentModal() {

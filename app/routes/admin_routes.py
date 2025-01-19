@@ -39,25 +39,38 @@ def add_student():
             flash("All fields are required to add a student.", "error")
             return redirect(url_for('admin_routes.students_management'))
 
-        # Add user and student records
-        user = User(first_name=first_name, last_name=last_name, role='student')
+        # Create and add a new user entry
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            username=f"{first_name.lower()}.{last_name.lower()}",
+            email=f"{first_name.lower()}.{last_name.lower()}@example.com",
+            password="default_password",  # Use hashed password in production
+            role="student"
+        )
         db.session.add(user)
-        db.session.flush()  # Get user_id after insertion
+        db.session.flush()  # Flush to get user_id
 
+        # Create and add a student entry
         student = Student(user_id=user.user_id, grade_level=grade_level)
         db.session.add(student)
-        db.session.commit()
 
+        # Commit transaction
+        db.session.commit()
         flash('Student added successfully!', 'success')
-    except IntegrityError:
+
+    except IntegrityError as e:
         db.session.rollback()
-        flash('Error adding student. Please try again.', 'error')
+        print(f"IntegrityError: {e}")
+        flash('Error adding student. Username or email might already exist.', 'error')
+
     except Exception as e:
         db.session.rollback()
-        print(f"Error adding student: {e}")
+        print(f"Unexpected error: {e}")
         flash('Unexpected error occurred. Please try again.', 'error')
 
     return redirect(url_for('admin_routes.students_management'))
+
 
 
 @admin_routes.route('/students/update/<int:student_id>', methods=['POST'])
@@ -74,17 +87,15 @@ def update_student(student_id):
         # Update student and user fields
         student.User.first_name = request.form.get('first_name')
         student.User.last_name = request.form.get('last_name')
-        student.Student.grade_level = request.form.get('grade_level')
+        student.grade_level = request.form.get('grade_level')
 
+        # Save changes
         db.session.commit()
-        flash('Student updated successfully!', 'success')
-    except IntegrityError:
-        db.session.rollback()
-        flash('Error updating student. Please try again.', 'error')
+        flash("Student updated successfully!", "success")
     except Exception as e:
         db.session.rollback()
         print(f"Error updating student: {e}")
-        flash('Unexpected error occurred. Please try again.', 'error')
+        flash("Error updating student. Please try again.", "error")
 
     return redirect(url_for('admin_routes.students_management'))
 
@@ -99,21 +110,18 @@ def delete_student(student_id):
             return redirect(url_for('admin_routes.students_management'))
 
         # Delete student and associated user
+        user = User.query.get(student.user_id)
         db.session.delete(student)
-        db.session.delete(User.query.get(student.user_id))
+        db.session.delete(user)
         db.session.commit()
 
         flash('Student deleted successfully!', 'success')
-    except IntegrityError:
-        db.session.rollback()
-        flash('Error deleting student. Please try again.', 'error')
     except Exception as e:
         db.session.rollback()
         print(f"Error deleting student: {e}")
-        flash('Unexpected error occurred. Please try again.', 'error')
+        flash('Error deleting student. Please try again.', 'error')
 
     return redirect(url_for('admin_routes.students_management'))
-
 
 # ------------------------------
 # Teachers Management
@@ -124,67 +132,108 @@ def teachers_management():
     return render_template('admin/teachers_man.html', teachers=teachers)
 
 
+from datetime import datetime
+
 @admin_routes.route('/teachers/add', methods=['POST'])
 def add_teacher():
-    first_name = request.form.get('first_name')
-    last_name = request.form.get('last_name')
-    username = request.form.get('username')
-    email = request.form.get('email')
-    password = request.form.get('password')  # Hash this in production
-    specialization = request.form.get('specialization')
-    hire_date = request.form.get('hire_date')
-
-    # Create User and Teacher
-    user = User(first_name=first_name, last_name=last_name, username=username, email=email, password=password, role='teacher')
-    db.session.add(user)
-    db.session.flush()  # Get user_id for the teacher
-
-    teacher = Teacher(user_id=user.user_id, specialization=specialization, hire_date=hire_date)
-    db.session.add(teacher)
-
     try:
+        # Retrieve form data
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')  # Hash this in production
+        specialization = request.form.get('specialization')
+        hire_date_str = request.form.get('hire_date')
+
+        # Convert hire_date to a Python date object
+        hire_date = datetime.strptime(hire_date_str, '%Y-%m-%d').date()
+
+        # Create User and Teacher
+        user = User(first_name=first_name, last_name=last_name, username=username, email=email, password=password, role='teacher')
+        db.session.add(user)
+        db.session.flush()  # Get user_id for the teacher
+
+        teacher = Teacher(user_id=user.user_id, specialization=specialization, hire_date=hire_date)
+        db.session.add(teacher)
+
+        # Commit changes
         db.session.commit()
         flash('Teacher added successfully!', 'success')
+
     except IntegrityError:
         db.session.rollback()
         flash('Error adding teacher. Please try again.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error adding teacher: {e}")
+        flash('Unexpected error occurred. Please try again.', 'error')
 
     return redirect(url_for('admin_routes.teachers_management'))
 
 
-@admin_routes.route('/teachers/update/<int:teacher_id>', methods=['GET', 'POST'])
-def update_teacher(teacher_id):
-    teacher = db.session.query(Teacher, User).join(User, Teacher.user_id == User.user_id).filter(Teacher.teacher_id == teacher_id).first()
 
-    if request.method == 'POST':
+from datetime import datetime
+
+@admin_routes.route('/teachers/update/<int:teacher_id>', methods=['POST'])
+def update_teacher(teacher_id):
+    try:
+        # Fetch the teacher and associated user
+        teacher = db.session.query(Teacher, User).join(User, Teacher.user_id == User.user_id).filter(
+            Teacher.teacher_id == teacher_id).first()
+
+        if not teacher:
+            flash("Teacher not found.", "error")
+            return redirect(url_for('admin_routes.teachers_management'))
+
+        # Update user fields
         teacher.User.first_name = request.form.get('first_name')
         teacher.User.last_name = request.form.get('last_name')
+        teacher.User.username = request.form.get('username')
+        teacher.User.email = request.form.get('email')
+        teacher.User.password = request.form.get('password')  # Hash passwords in production
+
+        # Update teacher fields
         teacher.Teacher.specialization = request.form.get('specialization')
+        hire_date_str = request.form.get('hire_date')  # Get hire date as string
+        teacher.Teacher.hire_date = datetime.strptime(hire_date_str, '%Y-%m-%d').date()  # Convert to Python date
 
-        try:
-            db.session.commit()
-            flash('Teacher updated successfully!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error updating teacher. Please try again.', 'error')
+        db.session.commit()
+        flash('Teacher updated successfully!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error updating teacher. Please try again.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating teacher: {e}")
+        flash('Unexpected error occurred. Please try again.', 'error')
 
-        return redirect(url_for('admin_routes.teachers_management'))
+    return redirect(url_for('admin_routes.teachers_management'))
 
-    return render_template('update_teacher.html', teacher=teacher)
+
 
 
 @admin_routes.route('/teachers/delete/<int:teacher_id>', methods=['POST'])
 def delete_teacher(teacher_id):
-    teacher = Teacher.query.get(teacher_id)
-    if teacher:
+    try:
+        # Fetch the teacher record
+        teacher = Teacher.query.get(teacher_id)
+        if not teacher:
+            flash("Teacher not found.", "error")
+            return redirect(url_for('admin_routes.teachers_management'))
+
+        # Delete the teacher and the associated user record
         db.session.delete(teacher)
         db.session.delete(User.query.get(teacher.user_id))
-        try:
-            db.session.commit()
-            flash('Teacher deleted successfully!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error deleting teacher. Please try again.', 'error')
+        db.session.commit()
+        flash("Teacher deleted successfully!", "success")
+    except IntegrityError:
+        db.session.rollback()
+        flash("Error deleting teacher. Please try again.", "error")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting teacher: {e}")
+        flash("Unexpected error occurred. Please try again.", "error")
 
     return redirect(url_for('admin_routes.teachers_management'))
 
@@ -241,5 +290,33 @@ def delete_course(course_id):
         except IntegrityError:
             db.session.rollback()
             flash('Error deleting course. Please try again.', 'error')
+
+    return redirect(url_for('admin_routes.courses_management'))
+
+@admin_routes.route('/courses/update/<int:course_id>', methods=['POST'])
+def update_course(course_id):
+    try:
+        # Fetch the course record
+        course = Course.query.get(course_id)
+
+        if not course:
+            flash("Course not found.", "error")
+            return redirect(url_for('admin_routes.courses_management'))
+
+        # Update course details
+        course.course_name = request.form.get('course_name')
+        course.grade_level = request.form.get('grade_level')
+        course.teacher_id = request.form.get('teacher_id')
+
+        # Commit changes
+        db.session.commit()
+        flash("Course updated successfully!", "success")
+    except IntegrityError:
+        db.session.rollback()
+        flash("Error updating course. Please try again.", "error")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating course: {e}")
+        flash("Unexpected error occurred. Please try again.", "error")
 
     return redirect(url_for('admin_routes.courses_management'))
