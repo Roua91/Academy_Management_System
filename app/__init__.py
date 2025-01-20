@@ -42,7 +42,10 @@ def create_app():
 
     # Register blueprints
     from app.routes.admin_routes import admin_routes
+    from app.routes.auth_routes import auth_routes
     app.register_blueprint(admin_routes, url_prefix='/admin')
+    app.register_blueprint(auth_routes, url_prefix='/auth')
+
 
 
     return app
