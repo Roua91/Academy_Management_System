@@ -212,7 +212,6 @@ def update_teacher(teacher_id):
 
 
 
-
 @admin_routes.route('/teachers/delete/<int:teacher_id>', methods=['POST'])
 def delete_teacher(teacher_id):
     try:
@@ -222,11 +221,12 @@ def delete_teacher(teacher_id):
             flash("Teacher not found.", "error")
             return redirect(url_for('admin_routes.teachers_management'))
 
-        # Delete the teacher and the associated user record
+        user = User.query.get(teacher.user_id)
         db.session.delete(teacher)
-        db.session.delete(User.query.get(teacher.user_id))
+        db.session.delete(user)
         db.session.commit()
         flash("Teacher deleted successfully!", "success")
+        
     except IntegrityError:
         db.session.rollback()
         flash("Error deleting teacher. Please try again.", "error")
