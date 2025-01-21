@@ -80,7 +80,8 @@ def login():
             elif user.role == 'teacher':
                 return redirect(url_for('teacher.dashboard'))  # Redirect for teacher
             elif user.role == 'student':
-                return redirect(url_for('admin_routes.admin_dashboard'))  # Redirect for student (temporary set to admin to test to see if it works)
+                return redirect(url_for('student_routes.dashboard'))
+  # Redirect for student (temporary set to admin to test to see if it works)
         else:
             flash('Invalid username or password.', 'danger')
             return redirect(url_for('auth_routes.login'))
