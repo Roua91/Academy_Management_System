@@ -43,8 +43,12 @@ def create_app():
     # Register blueprints
     from app.routes.admin_routes import admin_routes
     from app.routes.auth_routes import auth_routes
+    from app.routes.student_routes import student_routes
+    from app.routes.landing import landing_routes
     app.register_blueprint(admin_routes, url_prefix='/admin')
     app.register_blueprint(auth_routes, url_prefix='/auth')
+    app.register_blueprint(student_routes, url_prefix='/student')
+    app.register_blueprint(landing_routes)
 
 
 
