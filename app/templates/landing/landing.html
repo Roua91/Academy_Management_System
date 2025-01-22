@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/png">
+    <title>Welcome to KD Academy</title>
+</head>
+<body class="landing-page">
+    <!-- Header Section -->
+    <header class="landing-header">
+        <div class="container">
+            <div class="logo">
+                <!-- Logo Placeholder -->
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="KD Academy Logo" class="logo-img">
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="{{ url_for('auth_routes.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('auth_routes.register') }}">Register</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="landing-main">
+        <div class="container">
+            <h1 class="welcome-title">Welcome to KD Academy</h1>
+            <p class="welcome-description">
+                Transforming education with modern technology. Log in or register to start your journey with us.
+            </p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth_routes.login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('auth_routes.register') }}" class="btn btn-secondary">Register</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="landing-footer">
+        <div class="container">
+            <p>&copy; 2025 KD Academy. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
