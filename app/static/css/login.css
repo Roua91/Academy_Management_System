@@ -21,7 +21,18 @@ form {
     max-width: 400px;
     box-sizing: border-box;
 }
+/* Logo image styling */
+.img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem; /* Adjust spacing between the logo and form fields */
+}
 
+.img-container .logo-img {
+    max-width: 150px; /* Reduce size of the logo */
+    height: auto;
+}
 /* Flash messages container */
 .alert-container {
     margin: 1rem auto;
