@@ -25,12 +25,35 @@ def register():
         # Validate form data
         if not all([first_name, last_name, username, email, password]):
             flash('All fields are required.', 'danger')
-            return redirect(url_for('auth_routes.register'))
+            return render_template(
+                'auth/register.html', 
+                first_name=first_name, 
+                last_name=last_name, 
+                username=username, 
+                email=email
+            )
+
+        # Check password length
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.', 'danger')
+            return render_template(
+                'auth/register.html', 
+                first_name=first_name, 
+                last_name=last_name, 
+                username=username, 
+                email=email
+            )
 
         # Check if username or email already exists
         if User.query.filter((User.username == username) | (User.email == email)).first():
             flash('Username or Email already exists.', 'danger')
-            return redirect(url_for('auth_routes.register'))
+            return render_template(
+                'auth/register.html', 
+                first_name=first_name, 
+                last_name=last_name, 
+                username=username, 
+                email=email
+            )
 
         # Hash the password and create a new student user
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -42,12 +65,24 @@ def register():
             password=hashed_password,
             role=role
         )
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Registration successful. You can now log in.', 'success')
-        return redirect(url_for('auth_routes.login'))
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful. You can now log in.', 'success')
+            return redirect(url_for('auth_routes.login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred during registration. Please try again.', 'danger')
+            return render_template(
+                'auth/register.html', 
+                first_name=first_name, 
+                last_name=last_name, 
+                username=username, 
+                email=email
+            )
 
     return render_template('auth/register.html')  # Registration form
+
 
 
 

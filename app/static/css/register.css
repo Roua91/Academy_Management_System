@@ -87,6 +87,8 @@ form button:hover {
     margin-bottom: 1rem;
     border-radius: 5px;
     font-size: 0.9rem;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .alert-success {
