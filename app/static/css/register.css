@@ -6,14 +6,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     min-height: 100vh;
-    background-color: #f4f4f4;
+    background-color: #e6f2ff;
+    overflow: hidden; /* Prevent scrolling */
 }
 
-h1 {
-    text-align: center;
-    color: #007BFF;
+/* Logo image styling */
+.img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem; /* Adjust spacing between the logo and form fields */
+}
+
+.img-container .logo-img {
+    max-width: 150px; /* Reduce size of the logo */
+    height: auto;
 }
 
 /* Centered container styling */
@@ -25,6 +33,10 @@ h1 {
     width: 100%;
     max-width: 400px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Input and label styling */
