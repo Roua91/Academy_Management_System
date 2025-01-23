@@ -3,7 +3,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 #from app import db
-from app.models  import db, User
+from app.models  import Student, db, User
 
 auth_routes = Blueprint('auth_routes', __name__, template_folder='/templates/auth')
 
@@ -88,7 +88,7 @@ def register():
             db.session.flush()  # Get the user ID before committing to use it in Student model
 
             # Add grade information to the Student table
-            new_student = Student(user_id=new_user.user_id, grade_level=int(grade))
+            new_student = Student(user_id=new_user.user_id, grade_level=str(grade))
             db.session.add(new_student)
             db.session.commit()
 
@@ -142,7 +142,7 @@ def login():
                 return redirect(url_for('teacher.dashboard'))  # Redirect for teacher
             elif user.role == 'student':
                 return redirect(url_for('student_routes.dashboard'))
-  # Redirect for student (temporary set to admin to test to see if it works)
+  
         else:
             flash('Invalid username or password.', 'danger')
             return redirect(url_for('auth_routes.login'))
