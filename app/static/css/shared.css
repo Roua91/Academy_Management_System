@@ -18,7 +18,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background-color: #fff; /* Changed to white */
+    background-color: #0056b3; /* Changed to white */
     color: #333; /* Adjusted text color for better visibility on white */
     font-family: 'Futura', sans-serif;
     border-bottom: 1px solid #ddd; /* Optional: subtle bottom border for contrast */
