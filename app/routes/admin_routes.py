@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.models import db, User, Student, Teacher, Course
 from sqlalchemy.exc import IntegrityError
+from werkzeug.security import generate_password_hash
 
 # Define the Blueprint for admin routes
 admin_routes = Blueprint('admin_routes', __name__)
@@ -142,15 +143,25 @@ def add_teacher():
         last_name = request.form.get('last_name')
         username = request.form.get('username')
         email = request.form.get('email')
-        password = request.form.get('password')  # Hash this in production
+        password = request.form.get('password')  
         specialization = request.form.get('specialization')
         hire_date_str = request.form.get('hire_date')
 
         # Convert hire_date to a Python date object
         hire_date = datetime.strptime(hire_date_str, '%Y-%m-%d').date()
 
+        # Hash the password
+        hashed_password = generate_password_hash(password)
+
         # Create User and Teacher
-        user = User(first_name=first_name, last_name=last_name, username=username, email=email, password=password, role='teacher')
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
+            email=email,
+            password=hashed_password,  # Store the hashed password
+            role='teacher'
+        )
         db.session.add(user)
         db.session.flush()  # Get user_id for the teacher
 
