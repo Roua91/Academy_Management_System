@@ -18,19 +18,34 @@ def register():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
+        grade = request.form.get('grade')  # New field for grade
 
         # Role is always set to 'student' for new users
         role = 'student'
 
         # Validate form data
-        if not all([first_name, last_name, username, email, password]):
-            flash('All fields are required.', 'danger')
+        if not all([first_name, last_name, username, email, password, grade]):
+            flash('All fields, including grade, are required.', 'danger')
             return render_template(
                 'auth/register.html', 
                 first_name=first_name, 
                 last_name=last_name, 
                 username=username, 
-                email=email
+                email=email,
+                grade=grade  # Pass grade back to the form
+            )
+
+        # Ensure grade is a valid number
+        if not grade.isdigit() or int(grade) not in range(1, 5):  # 
+
+            flash('Grade must be a valid number.', 'danger')
+            return render_template(
+                'auth/register.html', 
+                first_name=first_name, 
+                last_name=last_name, 
+                username=username, 
+                email=email,
+                grade=grade
             )
 
         # Check password length
@@ -41,7 +56,8 @@ def register():
                 first_name=first_name, 
                 last_name=last_name, 
                 username=username, 
-                email=email
+                email=email,
+                grade=grade
             )
 
         # Check if username or email already exists
@@ -52,7 +68,8 @@ def register():
                 first_name=first_name, 
                 last_name=last_name, 
                 username=username, 
-                email=email
+                email=email,
+                grade=grade
             )
 
         # Hash the password and create a new student user
@@ -65,9 +82,16 @@ def register():
             password=hashed_password,
             role=role
         )
+
         try:
             db.session.add(new_user)
+            db.session.flush()  # Get the user ID before committing to use it in Student model
+
+            # Add grade information to the Student table
+            new_student = Student(user_id=new_user.user_id, grade_level=int(grade))
+            db.session.add(new_student)
             db.session.commit()
+
             flash('Registration successful. You can now log in.', 'success')
             return redirect(url_for('auth_routes.login'))
         except Exception as e:
@@ -78,10 +102,12 @@ def register():
                 first_name=first_name, 
                 last_name=last_name, 
                 username=username, 
-                email=email
+                email=email,
+                grade=grade
             )
 
     return render_template('auth/register.html')  # Registration form
+  
 
 
 
