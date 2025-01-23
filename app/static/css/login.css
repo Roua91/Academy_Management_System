@@ -8,7 +8,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f4f4f4;
+    background-color: #e6f2ff;;
 }
 
 /* Centered form container */
@@ -21,7 +21,18 @@ form {
     max-width: 400px;
     box-sizing: border-box;
 }
+/* Logo image styling */
+.img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem; /* Adjust spacing between the logo and form fields */
+}
 
+.img-container .logo-img {
+    max-width: 150px; /* Reduce size of the logo */
+    height: auto;
+}
 /* Flash messages container */
 .alert-container {
     margin: 1rem auto;
