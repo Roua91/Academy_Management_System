@@ -1,36 +1,70 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/student_dashboard.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
-        <h1 class="header-title">Welcome to the Student Dashboard</h1>
-        <p class="header-subtitle">Hello, {{ username }}!</p>
+        <div class="header-content">
+            <h1 class="header-title">Welcome to the Student Dashboard</h1>
+            <p class="header-subtitle">Hello, {{ username }}!</p>
+        </div>
     </header>
 
-
+    <!-- Navbar -->
     <nav class="navbar">
         <a href="{{ url_for('auth_routes.login') }}" class="nav-link">Home</a>
         <a href="{{ url_for('auth_routes.logout') }}" class="nav-link">Logout</a>
     </nav>
 
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-left">
+            <!-- Quick Actions Section -->
+            <section class="quick-actions">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="action-buttons">
+                    <a href="{{ url_for('student_routes.view_attendance') }}" class="action-button">📅 View Attendance</a>
+                    <a href="{{ url_for('student_routes.view_grades') }}" class="action-button">📊 View Grades</a>
+                    <a href="{{ url_for('student_routes.enroll') }}" class="action-button">📝 Enroll in Courses</a>
+                </div>
+            </section>
 
-    <main class="main-container">
-        <h2 class="section-title">Quick Actions</h2>
-        <div class="action-links">
-            <a href="{{ url_for('student_routes.view_attendance') }}" class="action-link">View Attendance</a>
-            <a href="{{ url_for('student_routes.view_grades') }}" class="action-link">View Grades</a>
-            <a href="{{ url_for('student_routes.enroll') }}" class="action-link">Enroll in Courses</a>
-
-
-
+            <!-- Notifications Section -->
+            <section class="notifications">
+                <h3 class="section-subtitle">Important Notifications</h3>
+                <p>Stay updated with important announcements and deadlines.</p>
+            </section>
         </div>
-    </main>
+
+        <div class="content-right">
+            <!-- Upcoming Events Section -->
+            <section class="upcoming-events">
+                <h3 class="section-subtitle">Upcoming Events</h3>
+                <ul>
+                    <li>Midterm Exams - March 15</li>
+                    <li>Final Exams - June 1</li>
+                    <li>Graduation Day - June 25</li>
+                </ul>
+            </section>
+
+            <!-- Progress Tracker -->
+            <section class="progress-tracker">
+                <h3 class="section-subtitle">Progress Tracker</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 70%;"></div>
+                </div>
+            </section>
+
+            <!-- Help Center Section -->
+            <section class="help-center">
+                <button class="help-button">Contact Help Center</button>
+            </section>
+        </div>
+    </div>
 </body>
 </html>
