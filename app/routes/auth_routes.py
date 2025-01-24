@@ -1,14 +1,10 @@
-#Authentication-related routes (includes login, logout, registration)
-#Authentication-related routes (includes login, logout, registration)
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
-#from app import db
-from app.models  import Student, db, User
+from app.models import Student, db, User
+from flask_login import login_user, logout_user, login_required
 
 auth_routes = Blueprint('auth_routes', __name__, template_folder='/templates/auth')
 
-
-# Registration Route
 # Registration Route
 @auth_routes.route('/register', methods=['GET', 'POST'])
 def register():
@@ -26,51 +22,42 @@ def register():
         # Validate form data
         if not all([first_name, last_name, username, email, password, grade]):
             flash('All fields, including grade, are required.', 'danger')
-            return render_template(
-                'auth/register.html', 
-                first_name=first_name, 
-                last_name=last_name, 
-                username=username, 
-                email=email,
-                grade=grade  # Pass grade back to the form
-            )
+            return render_template('auth/register.html', 
+                                   first_name=first_name, 
+                                   last_name=last_name, 
+                                   username=username, 
+                                   email=email,
+                                   grade=grade)
 
         # Ensure grade is a valid number
-        if not grade.isdigit() or int(grade) not in range(1, 5):  # 
-
+        if not grade.isdigit() or int(grade) not in range(1, 5):  
             flash('Grade must be a valid number.', 'danger')
-            return render_template(
-                'auth/register.html', 
-                first_name=first_name, 
-                last_name=last_name, 
-                username=username, 
-                email=email,
-                grade=grade
-            )
+            return render_template('auth/register.html', 
+                                   first_name=first_name, 
+                                   last_name=last_name, 
+                                   username=username, 
+                                   email=email,
+                                   grade=grade)
 
         # Check password length
         if len(password) < 8:
             flash('Password must be at least 8 characters long.', 'danger')
-            return render_template(
-                'auth/register.html', 
-                first_name=first_name, 
-                last_name=last_name, 
-                username=username, 
-                email=email,
-                grade=grade
-            )
+            return render_template('auth/register.html', 
+                                   first_name=first_name, 
+                                   last_name=last_name, 
+                                   username=username, 
+                                   email=email,
+                                   grade=grade)
 
         # Check if username or email already exists
         if User.query.filter((User.username == username) | (User.email == email)).first():
             flash('Username or Email already exists.', 'danger')
-            return render_template(
-                'auth/register.html', 
-                first_name=first_name, 
-                last_name=last_name, 
-                username=username, 
-                email=email,
-                grade=grade
-            )
+            return render_template('auth/register.html', 
+                                   first_name=first_name, 
+                                   last_name=last_name, 
+                                   username=username, 
+                                   email=email,
+                                   grade=grade)
 
         # Hash the password and create a new student user
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -97,22 +84,15 @@ def register():
         except Exception as e:
             db.session.rollback()
             flash('An error occurred during registration. Please try again.', 'danger')
-            return render_template(
-                'auth/register.html', 
-                first_name=first_name, 
-                last_name=last_name, 
-                username=username, 
-                email=email,
-                grade=grade
-            )
+            return render_template('auth/register.html', 
+                                   first_name=first_name, 
+                                   last_name=last_name, 
+                                   username=username, 
+                                   email=email,
+                                   grade=grade)
 
-    return render_template('auth/register.html')  # Registration form
-  
+    return render_template('auth/register.html')
 
-
-
-
-#Login Route
 # Login Route
 @auth_routes.route('/login', methods=['GET', 'POST'])
 def login():
@@ -120,46 +100,51 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        # Validate form data
-        if not all([username, password]):
-            flash('Username and Password are required.', 'danger')
-            return redirect(url_for('auth_routes.login'))
-
-        # Query the database for the user
+        # Fetch the user from the database
         user = User.query.filter_by(username=username).first()
 
-        # Check if user exists and if the password matches
+        # Check if the user exists and the password is correct
         if user and check_password_hash(user.password, password):
-            # Store user data in the session
-            session['user_id'] = user.user_id
-            session['username'] = user.username
-            session['role'] = user.role
+            login_user(user)
+            flash('You have successfully logged in!', 'success')
 
-            # Redirect based on user role
-            if user.role == 'admin':
-                return redirect(url_for('admin_routes.admin_dashboard'))  # Redirect for admin
-            elif user.role == 'teacher':
-                return redirect(url_for('teacher.dashboard'))  # Redirect for teacher
+        # Check the user's role and redirect accordingly
+            if user.role == 'teacher':  # Assuming you have 'teacher' and 'student' roles
+                return redirect(url_for('teacher.teacher_dashboard'))  # Replace with your teacher dashboard route
             elif user.role == 'student':
-                return redirect(url_for('student_routes.dashboard'))
-  
+                return redirect(url_for('student_dashboard'))  # Replace with your student dashboard route
+            else:
+                return redirect(url_for('landing.home'))
+
+            # Handle redirection after login
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('landing_routes.home'))
         else:
-            flash('Invalid username or password.', 'danger')
-            return redirect(url_for('auth_routes.login'))
+            flash('Invalid username or password. Please try again.', 'danger')
 
-    return render_template('auth/login.html')  # Login form
+    return render_template('auth/login.html')
+
+# Teacher Dashboard Route
+@auth_routes.route('/teacher_dashboard')
+@login_required
+def teacher_dashboard():
+    # Ensure the user is a teacher before showing the dashboard
+    if current_user.role != 'teacher':
+        flash('You are not authorized to view this page.', 'danger')
+        return redirect(url_for('auth_routes.login'))
+
+    # Your teacher dashboard logic here
+    return render_template('teacher/teacher_dashboard.html')
 
 
-#Logout Route 
-@auth_routes.route('/logout')
+
+
+@auth_routes.route('logout')
 def logout():
-    # Clear the session to log the user out
-    session.clear()
-
-    # Flash a message to notify the user of successful logout
-    flash('You have been logged out successfully.', 'success')
-
-    # Redirect to the login page
-    return redirect(url_for('auth_routes.login'))
+    # Clear the session or any user-specific data
+    session.pop('user_id', None)  # Remove user_id or any key you use to track user login
+    
+    # Redirect to the login page after logging out
+    return redirect(url_for('landing_routes.home'))  # Assuming 'auth.login' is the route for login page
 
 
