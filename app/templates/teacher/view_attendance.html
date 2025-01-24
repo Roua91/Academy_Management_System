@@ -7,18 +7,52 @@
     <style>
       body {
         font-family: Arial, sans-serif;
+        text-align: center; /* Center-aligns the main content */
+      }
+      header {
+        text-align: left; /* Ensures the "Back to Dashboard" is left-aligned */
+        margin: 20px;
       }
       .attendance-container {
         width: 80%;
         margin: 20px auto;
+      }
+      h1 {
+        font-size: 36px; /* Larger header text */
+        margin-bottom: 20px;
+      }
+      h3 {
+        font-size: 24px; /* Larger subheader text */
+        margin-top: 20px;
+      }
+      p {
+        font-size: 18px; /* Larger paragraph text */
+      }
+      form {
+        margin: 20px 0;
+        font-size: 18px; /* Larger form label text */
+      }
+      label {
+        font-size: 18px;
+      }
+      input[type="date"] {
+        font-size: 16px;
+        padding: 5px;
+      }
+      button {
+        font-size: 18px;
+        padding: 10px 20px;
+        margin-left: 10px;
       }
       .attendance-record-table {
         margin-top: 20px;
       }
       .attendance-record-table th,
       .attendance-record-table td {
-        padding: 8px 15px;
+        padding: 12px 20px; /* Larger table cell padding */
+        font-size: 18px; /* Larger table text */
         border: 1px solid #ccc;
+        text-align: center; /* Center-aligns table content */
       }
       .attendance-record-table th {
         background-color: #f4f4f4;
@@ -29,13 +63,11 @@
         display: inline-block;
         background-color: #007bff;
         color: white;
-        padding: 10px 20px;
-        font-size: 16px;
+        padding: 15px 25px; /* Larger button padding */
+        font-size: 20px; /* Larger button text */
         text-decoration: none;
         border-radius: 5px;
         text-align: center;
-        margin-bottom: 20px;
-        width: fit-content;
       }
       .back-button:hover {
         background-color: #0056b3;
@@ -47,9 +79,9 @@
       <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button"
         >Back to Dashboard</a
       >
-      <h1>View Attendance</h1>
     </header>
     <main class="attendance-container">
+      <h1>View Attendance</h1>
       <!-- Form for selecting date -->
       <form method="POST">
         <label for="attendance_date">Select Date:</label>
