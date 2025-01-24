@@ -50,6 +50,4 @@ def create_app():
     app.register_blueprint(student_routes, url_prefix='/student')
     app.register_blueprint(landing_routes)
 
-
-
     return app
