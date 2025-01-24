@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/shared.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/teacher_dashboard.css') }}"
+    />
+    <title>Teacher Dashboard</title>
+    <style>
+      /* Added custom styling for the welcome section */
+      .welcome-card {
+        padding: 20px;
+        text-align: center;
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .welcome-card h2 {
+        font-size: 36px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .welcome-card p {
+        font-size: 20px;
+        line-height: 1.5;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
+      /* Smaller font size for Vision and Mission */
+      .welcome-card .highlight {
+        color: #007bff;
+        font-weight: bold;
+      }
+
+      .vision-mission {
+        font-size: 18px;
+        color: #555;
+        margin-top: 10px;
+      }
+
+      .vision-mission span {
+        font-size: 20px;
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      /* Remove bullets from the side navigation */
+      .side-nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .side-nav li {
+        margin-bottom: 15px; /* Adds space between each list item */
+      }
+
+      .side-nav a {
+        text-decoration: none;
+        color: #333;
+        font-size: 18px;
+        padding: 10px;
+        display: block;
+        border-radius: 5px;
+      }
+
+      .side-nav a:hover {
+        background-color: #f4f4f4;
+      }
+
+      .side-nav .active {
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      .top-nav .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      .top-nav .user-info {
+        font-size: 18px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="logo">KD Academy</div>
+      <div class="user-info">
+        <span>Welcome, {{ teacher_name }}!</span>
+        <!-- Teacher's name -->
+        <span>Teacher</span>
+        <img
+          src="{{ url_for('static', filename='images/teacher_page.png') }}"
+          alt="Teacher Icon"
+        />
+      </div>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <nav class="side-nav">
+      <ul>
+        <li>
+          <a href="{{ url_for('teacher.teacher_dashboard') }}" class="active">
+            Teacher Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('teacher.record_attendance') }}"
+            >Record Attendance</a
+          >
+        </li>
+        <li>
+          <a href="{{ url_for('teacher.view_attendance') }}">View Attendance</a>
+        </li>
+        <li>
+          <a href="{{ url_for('teacher.grade_assessment') }}"
+            >Grade Assessment</a
+          >
+        </li>
+        <li><a href="{{ url_for('teacher.view_grades') }}">View Grades</a></li>
+        <li>
+          <a href="{{ url_for('auth_routes.logout') }}" class="btn btn-danger"
+            >Logout</a
+          >
+        </li>
+        <!-- Logout button -->
+      </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Left Content Section -->
+      <section class="content-left">
+        <div class="welcome-card">
+          <h2>Welcome, {{ teacher_name }}!</h2>
+          <p>
+            You are logged in to the
+            <span class="highlight">KD Academy</span> Website.
+          </p>
+          <p class="vision-mission">
+            <span class="highlight">Our Vision</span> is to provide a quality
+            education through innovative teaching methods, fostering a nurturing
+            and inclusive learning environment.
+          </p>
+          <p class="vision-mission">
+            <span class="highlight">Our Mission</span> is to offer students a
+            holistic education that equips them with the skills, knowledge, and
+            confidence needed to succeed in the future.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
 
