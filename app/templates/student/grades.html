@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Grades</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/student_dashboard.css')}}">
+    <title>Grades</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
 </head>
 <body>
     <header class="header">
@@ -18,8 +18,28 @@
 
     <main class="main-container">
         <h2 class="section-title">Your Grades</h2>
-        <p>Here, you can view your grades.</p>
-        <!-- Add table or details later -->
+        {% if grades %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Assignment</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for record, course in grades %}
+                    <tr>
+                        <td>{{ course.course_name }}</td>
+                        <td>{{ record.assignment_name }}</td>
+                        <td>{{ record.grade }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No grades found.</p>
+        {% endif %}
     </main>
 </body>
 </html>
