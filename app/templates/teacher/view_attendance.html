@@ -7,10 +7,10 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        text-align: center; /* Center-aligns the main content */
+        text-align: center; /* Center-aligns text in the body */
       }
       header {
-        text-align: left; /* Ensures the "Back to Dashboard" is left-aligned */
+        text-align: left; /* Aligns the "Back to Dashboard" button to the left */
         margin: 20px;
       }
       .attendance-container {
@@ -45,16 +45,22 @@
         margin-left: 10px;
       }
       .attendance-record-table {
-        margin-top: 20px;
+        margin: 20px auto; /* Adds spacing and centers the table container */
+        width: auto; /* Ensures the table adapts to its content */
       }
-      .attendance-record-table th,
-      .attendance-record-table td {
-        padding: 12px 20px; /* Larger table cell padding */
+      table {
+        margin: 0 auto; /* Centers the table itself */
+        border-collapse: collapse;
+        width: auto; /* Table will take just enough width for its content */
+      }
+      th,
+      td {
+        padding: 12px 20px; /* Larger cell padding */
         font-size: 18px; /* Larger table text */
         border: 1px solid #ccc;
-        text-align: center; /* Center-aligns table content */
+        text-align: center; /* Centers table content */
       }
-      .attendance-record-table th {
+      th {
         background-color: #f4f4f4;
       }
 
@@ -95,9 +101,11 @@
         <button type="submit">View Attendance</button>
       </form>
 
-      {% if selected_date %} {% if attendance_records %}
+      {% if selected_date %}
+      {% if attendance_records %}
+      <h3>Recorded Attendance for {{ selected_date }}:</h3>
+      <!-- Centered table -->
       <div class="attendance-record-table">
-        <h3>Recorded Attendance for {{ selected_date }}:</h3>
         <table>
           <tr>
             <th>Student ID</th>
@@ -117,7 +125,8 @@
       </div>
       {% else %}
       <p>No attendance records found for the selected date.</p>
-      {% endif %} {% else %}
+      {% endif %}
+      {% else %}
       <p>Please select a date to view attendance.</p>
       {% endif %}
     </main>
