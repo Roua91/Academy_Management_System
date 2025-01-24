@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grade Assessment</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .attendance-container {
+        width: 80%;
+        margin: 20px auto;
+      }
+      .attendance-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 5px 0;
+        border-bottom: 1px solid #ccc;
+      }
+      .attendance-row div {
+        text-align: left;
+      }
+      .column-id {
+        width: 15%;
+      }
+      .column-name {
+        width: 50%;
+      }
+      .column-select {
+        width: 35%;
+      }
+      select {
+        width: 100%;
+        padding: 5px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .flash-message {
+        padding: 10px;
+        margin-bottom: 20px;
+        color: white;
+        background-color: green;
+        font-weight: bold;
+      }
+      .flash-error {
+        background-color: red;
+      }
+      /* Styling for the Back to Dashboard link as a button */
+      .back-button {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+        width: fit-content;
+      }
+      .back-button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button"
+        >Back to Dashboard</a
+      >
+      <h1>Grade Assessment</h1>
+    </header>
+    <main class="attendance-container">
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="flash-message {% if category == 'error' %}flash-error{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <form method="POST">
+        <!-- Input for Assignment Name -->
+        <div>
+          <label for="assignment_name">Assignment Name</label>
+          <input
+            type="text"
+            name="assignment_name"
+            id="assignment_name"
+            required
+          />
+        </div>
+
+        <!-- Table for Grade Assessment -->
+        {% for student in students %}
+        <div class="attendance-row">
+          <div class="column-id">{{ student.student_id }}</div>
+          <div class="column-name">
+            {{ student.first_name }} {{ student.last_name }}
+          </div>
+          <div class="column-select">
+            <select name="grade_{{ student.student_id }}" required>
+              <option value="" disabled selected>Select Grade</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+            {% if student.courses|length > 1 %}
+            <select name="course_{{ student.student_id }}" required>
+              <option value="" disabled selected>Select Course</option>
+              {% for course in student.courses %}
+              <option value="{{ course.course_id }}">{{ course.name }}</option>
+              {% endfor %}
+            </select>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+
+        <button type="submit">Submit Grades</button>
+      </form>
+    </main>
+  </body>
+</html>
