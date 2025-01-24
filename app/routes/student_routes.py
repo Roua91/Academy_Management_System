@@ -1,8 +1,10 @@
 # Student module routes
 from flask import Blueprint, render_template, session, redirect, url_for, flash
 
+
 # Create the student blueprint
 student_routes = Blueprint('student_routes', __name__, template_folder='/templates/student')
+
 
 # Student Dashboard Route
 @student_routes.route('/dashboard')
@@ -12,8 +14,11 @@ def dashboard():
         flash('Unauthorized access. Please log in as a student.', 'danger')
         return redirect(url_for('auth_routes.login'))
 
+
     # Render the student dashboard
     return render_template('student/student_dashboard.html', username=session.get('username'))
+
+
 
 # view grades
 from sqlalchemy.sql import text  # Import text explicitly
@@ -69,4 +74,27 @@ def view_attendance():
     return render_template('student/attendance.html', attendance_data=attendance_data)
 
 # enroll
+@student_routes.route('/enroll', methods=['GET', 'POST'])
+def enroll():
+    # Check if the user is logged in and is a student
+    if 'user_id' not in session or session.get('role') != 'student':
+        flash('Unauthorized access. Please log in as a student.', 'danger')
+        return redirect(url_for('auth_routes.login'))
+
+    # Fetch all courses
+    courses = Course.query.all()
+
+    if request.method == 'POST':
+        selected_course_id = request.form.get('course')  # Course ID from the form
+
+        # Make sure a course was selected
+        if selected_course_id:
+            # Logic for enrolling the student in a course
+            flash('You have successfully enrolled in the course!', 'success')
+            return redirect(url_for('student_routes.dashboard'))
+        else:
+            flash('Please select a course.', 'danger')
+
+    # Render the enrollment page with available courses
+    return render_template('student/enroll.html', courses=courses)
 
