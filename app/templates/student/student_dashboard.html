@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/student_dashboard.css')}}">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Welcome to the Student Dashboard</h1>
+        <p class="header-subtitle">Hello, {{ username }}!</p>
+    </header>
+
+    <nav class="navbar" role="navigation">
+        <a href="{{ url_for('auth_routes.login') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('auth_routes.logout') }}" class="nav-link">Logout</a>
+    </nav>
+
+    <main class="main-container">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="action-links">
+            <a href="{{ url_for('student_routes.view_attendance') }}" class="action-link">View Attendance</a>
+            <a href="{{ url_for('student_routes.view_grades') }}" class="action-link">View Grades</a>
+            <a href="{{ url_for('student_routes.enroll') }}" class="action-link">Enroll in Courses</a>
+        </div>
+
+        <section class="summary-section">
+            <h2 class="section-title">Your Summary</h2>
+            <div class="summary-cards">
+                <div class="card">
+                    <h3>Attendance</h3>
+                    <p>85%</p> <!-- Replace with dynamic data -->
+                </div>
+                <div class="card">
+                    <h3>Grades</h3>
+                    <p>3.8 GPA</p> <!-- Replace with dynamic data -->
+                </div>
+                <div class="card">
+                    <h3>Enrolled Courses</h3>
+                    <p>5 Courses</p> <!-- Replace with dynamic data -->
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
