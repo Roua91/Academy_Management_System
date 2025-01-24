@@ -46,12 +46,14 @@ def view_grades():
     # view attendance
     from sqlalchemy.sql import text  # Import text for raw SQL queries
 
+
 @student_routes.route('/attendance', methods=['GET'])
 def view_attendance():
     # Check if the user is logged in and is a student
     if 'user_id' not in session or session.get('role') != 'student':
         flash('Unauthorized access. Please log in as a student.', 'danger')
         return redirect(url_for('auth_routes.login'))
+
 
     # Fetch attendance data for the logged-in student
     student_id = session.get('user_id')  # Assuming user_id corresponds to the student's ID
@@ -70,8 +72,10 @@ def view_attendance():
         flash(f"An error occurred while fetching attendance data: {str(e)}", 'danger')
         return redirect(url_for('student_routes.dashboard'))
 
+
     # Render the attendance page with the fetched data
     return render_template('student/attendance.html', attendance_data=attendance_data)
+
 
 # enroll
 @student_routes.route('/enroll', methods=['GET', 'POST'])

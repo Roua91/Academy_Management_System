@@ -11,6 +11,9 @@
         <h1 class="header-title">Attendance Records</h1>
         <nav class="navbar">
             <a href="{{ url_for('student_routes.dashboard') }}" class="nav-link">Back to Dashboard</a>
+            
+           
+
         </nav>
     </header>
     <main class="main-container">
@@ -19,18 +22,18 @@
             <thead>
                 <tr>
                     <th>Course Name</th>
-                    <th>Attendance Percentage</th>
+                    <th>Attendance status</th>
                 </tr>
             </thead>
             <tbody>
-                {% for course_name, attendance_percentage in attendance_data %}
+                {% for course_name, status in attendance_data %}
                     <tr>
                         <td>{{ course_name }}</td>
-                        <td>{{ attendance_percentage }}%</td>
+                        <td>{{ status }}%</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </main>
 </body>
-</html>
+</ht
