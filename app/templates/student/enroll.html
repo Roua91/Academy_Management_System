@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enroll in Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Enroll in Courses</h1>
+    </header>
+
+    <nav class="navbar">
+        <a href="{{ url_for('student_routes.dashboard') }}" class="nav-link">Dashboard</a>
+        <a href="{{ url_for('auth_routes.logout') }}" class="nav-link">Logout</a>
+    </nav>
+
+    <main class="main-container">
+        <h2 class="section-title">Course Enrollment</h2>
+        <form method="POST">
+            <label for="course_id">Select a Course:</label>
+            <select name="course_id" id="course_id" required>
+                <option value="" disabled selected>Select a course</option>
+                {% for course in courses %}
+                    <option value="{{ course.course_id }}">{{ course.course_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Enroll</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </main>
+</body>
+</html>

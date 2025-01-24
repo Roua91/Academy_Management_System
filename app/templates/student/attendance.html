@@ -1,39 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
-</head>
-<body>
-    <header class="header">
-        <h1 class="header-title">Attendance Records</h1>
-        <nav class="navbar">
-            <a href="{{ url_for('student_routes.dashboard') }}" class="nav-link">Back to Dashboard</a>
-            
-           
-
-        </nav>
-    </header>
-    <main class="main-container">
-        <h2 class="section-title">Your Attendance</h2>
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th>Course Name</th>
-                    <th>Attendance status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course_name, status in attendance_data %}
-                    <tr>
-                        <td>{{ course_name }}</td>
-                        <td>{{ status }}%</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </main>
-</body>
-</ht
+{% if attendance %}
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Attendance Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record, course in attendance %}
+            <tr>
+                <td>{{ course.course_name }}</td>
+                <td>{{ record.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No attendance records found.</p>
+{% endif %}
