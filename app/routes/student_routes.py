@@ -15,3 +15,58 @@ def dashboard():
     # Render the student dashboard
     return render_template('student/student_dashboard.html', username=session.get('username'))
 
+# view grades
+from sqlalchemy.sql import text  # Import text explicitly
+
+@student_routes.route('/grades', methods=['GET'])
+def view_grades():
+    # Check if the user is logged in and is a student
+    if 'user_id' not in session or session.get('role') != 'student':
+        flash('Unauthorized access. Please log in as a student.', 'danger')
+        return redirect(url_for('auth_routes.login'))
+
+    # Fetch grades for the logged-in student
+    student_id = session.get('user_id')  # Assuming user_id corresponds to the student's ID
+    grades_query = text("""
+        SELECT c.course_name, g.grade
+        FROM grades g
+        JOIN courses c ON g.course_id = c.course_id
+        WHERE g.student_id = :student_id
+    """)
+    grades = db.session.execute(grades_query, {'student_id': student_id}).fetchall()
+
+    # Render the grades page
+    return render_template('student/grades.html', grades=grades)
+
+    # view attendance
+    from sqlalchemy.sql import text  # Import text for raw SQL queries
+
+@student_routes.route('/attendance', methods=['GET'])
+def view_attendance():
+    # Check if the user is logged in and is a student
+    if 'user_id' not in session or session.get('role') != 'student':
+        flash('Unauthorized access. Please log in as a student.', 'danger')
+        return redirect(url_for('auth_routes.login'))
+
+    # Fetch attendance data for the logged-in student
+    student_id = session.get('user_id')  # Assuming user_id corresponds to the student's ID
+    try:
+        attendance_query = text("""
+            SELECT c.course_name,
+                   SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END) * 100.0 / COUNT(a.status) AS attendance_percentage
+            FROM attendance a
+            JOIN courses c ON a.course_id = c.course_id
+            WHERE a.student_id = :student_id
+            GROUP BY c.course_name
+        """)
+        attendance_data = db.session.execute(attendance_query, {'student_id': student_id}).fetchall()
+    except Exception as e:
+        # Handle errors if the query fails
+        flash(f"An error occurred while fetching attendance data: {str(e)}", 'danger')
+        return redirect(url_for('student_routes.dashboard'))
+
+    # Render the attendance page with the fetched data
+    return render_template('student/attendance.html', attendance_data=attendance_data)
+
+# enroll
+
