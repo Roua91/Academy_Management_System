@@ -7,8 +7,17 @@ Purpose:
 """
 
 from flask import Flask
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 import os
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.login_view = 'auth_routes.login'  # The login route for redirection if not logged in
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Initialize SQLAlchemy
 db = SQLAlchemy()
@@ -27,6 +36,14 @@ def create_app():
 
     # Initialize the database with the app
     db.init_app(app)
+    
+    # Initialize Flask-Login
+    login_manager.init_app(app)
+    
+    # Define the user_loader function to load a user from the database
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))  # Query user by their ID (ensure 'user_id' is your primary key)
 
     # Import models and create tables only if necessary
     with app.app_context():
@@ -44,10 +61,13 @@ def create_app():
     from app.routes.admin_routes import admin_routes
     from app.routes.auth_routes import auth_routes
     from app.routes.student_routes import student_routes
+    from app.routes.teacher_routes import teacher_routes
     from app.routes.landing import landing_routes
     app.register_blueprint(admin_routes, url_prefix='/admin')
     app.register_blueprint(auth_routes, url_prefix='/auth')
     app.register_blueprint(student_routes, url_prefix='/student')
     app.register_blueprint(landing_routes)
+    app.register_blueprint(teacher_routes, url_prefix='/teacher')
+
 
     return app
