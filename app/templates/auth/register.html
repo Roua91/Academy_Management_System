@@ -1,74 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/register.css') }}"
+    />
     <title>Register</title>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Flash Messages -->
-    <div style="min-height: 50px;">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="alert-container">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% endwith %}
+    <div style="min-height: 50px">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="alert-container">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
     </div>
 
     <!-- Centered Form Container -->
     <div class="container">
-        <form action="{{ url_for('auth_routes.register') }}" method="POST">
-            <div class="img-container"> 
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="KD Academy Logo" class="logo-img">
-            </div>
+      <form action="{{ url_for('auth_routes.register') }}" method="POST">
+        <div class="img-container">
+          <img
+            src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="KD Academy Logo"
+            class="logo-img"
+          />
+        </div>
 
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" class="form-input" 
-                placeholder="Enter first name" value="{{ first_name | default('') }}" required>
+        <label for="first_name">First Name</label>
+        <input
+          type="text"
+          id="first_name"
+          name="first_name"
+          class="form-input"
+          placeholder="Enter first name"
+          value="{{ first_name | default('') }}"
+          required
+        />
 
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" class="form-input" 
-                placeholder="Enter last name" value="{{ last_name | default('') }}" required>
+        <label for="last_name">Last Name</label>
+        <input
+          type="text"
+          id="last_name"
+          name="last_name"
+          class="form-input"
+          placeholder="Enter last name"
+          value="{{ last_name | default('') }}"
+          required
+        />
 
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" class="form-input" 
-                placeholder="Enter username" value="{{ username | default('') }}" required>
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          class="form-input"
+          placeholder="Enter username"
+          value="{{ username | default('') }}"
+          required
+        />
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" class="form-input" 
-                placeholder="Enter valid email" value="{{ email | default('') }}" required>
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          placeholder="Enter valid email"
+          value="{{ email | default('') }}"
+          required
+        />
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-input" 
-                placeholder="Enter password" required>
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          placeholder="Enter password"
+          required
+        />
 
-            <!-- Hidden Role Field -->
-            <input type="hidden" id="role" name="role" value="student">
-            <div class="form-group">
-                <label for="grade">Grade</label>
-                <select name="grade" id="grade" class="form-control" required>
-                    <option value="" disabled selected>Select your grade</option>
-                    <option value="1">Grade 1</option>
-                    <option value="2">Grade 2</option>
-                    <option value="3">Grade 3</option>
-                    <option value="3">Grade 4</option>
-                    <option value="3">Grade 5</option>
-                </select>
-            </div>
-            <button type="submit">Register</button>
-        </form>
+        <!-- Hidden Role Field -->
+        <input type="hidden" id="role" name="role" value="student" />
+        <div class="form-group">
+          <label for="grade">Grade</label>
+          <select name="grade" id="grade" class="form-control" required>
+            <option value="" disabled selected>Select your grade</option>
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="3">Grade 4</option>
+            <option value="3">Grade 5</option>
+          </select>
+        </div>
+        <button type="submit">Register</button>
+      </form>
     </div>
-</body>
+  </body>
 </html>
-
-
-
-
-

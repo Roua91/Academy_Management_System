@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -52,12 +53,29 @@
       .flash-error {
         background-color: red;
       }
+
+      /* Styling for the Back to Dashboard link as a button */
+      .back-button {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+        width: fit-content;
+      }
+      .back-button:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
   <body>
     <header>
+      <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button">Back to Dashboard</a>
       <h1>Record Attendance</h1>
-      <a href="{{ url_for('teacher.teacher_dashboard') }}">Back to Dashboard</a>
     </header>
 
     <main class="attendance-container">
@@ -111,3 +129,135 @@
     </main>
   </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Record Attendance</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .attendance-container {
+        width: 80%;
+        margin: 20px auto;
+      }
+      .attendance-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 5px 0;
+        border-bottom: 1px solid #ccc;
+      }
+      .attendance-row div {
+        text-align: left;
+      }
+      .column-id {
+        width: 15%;
+      }
+      .column-name {
+        width: 50%;
+      }
+      .column-select {
+        width: 35%;
+      }
+      select {
+        width: 100%;
+        padding: 5px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .flash-message {
+        padding: 10px;
+        margin-bottom: 20px;
+        color: white;
+        background-color: green;
+        font-weight: bold;
+      }
+      .flash-error {
+        background-color: red;
+      }
+
+      /* Styling for the Back to Dashboard link as a button */
+      .back-button {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+        width: fit-content;
+      }
+      .back-button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button">Back to Dashboard</a>
+      <h1>Record Attendance</h1>
+    </header>
+
+    <main class="attendance-container">
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash-message {% if category == 'error' %}flash-error{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST">
+        <!-- Course ID Dropdown -->
+        <label for="course_id">Select Course:</label>
+        <select name="course_id" id="course_id" required>
+            <option value="" disabled selected>Select Course</option>
+            {% for course in courses %}
+                <option value="{{ course.course_id }}" {% if course.course_id == course_id %}selected{% endif %}>{{ course.course_name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Table for Attendance Recording -->
+        <div class="attendance-row" style="font-weight: bold">
+            <div class="column-id">ID</div>
+            <div class="column-name">Name</div>
+            <div class="column-select">Attendance</div>
+        </div>
+
+        {% for student in students %}
+            {% if student.first_name and student.last_name %}
+                <div class="attendance-row">
+                    <div class="column-id">{{ student.student_id }}</div>
+                    <div class="column-name">{{ student.first_name }} {{ student.last_name }}</div>
+                    <div class="column-select">
+                        <select name="attendance_{{ student.student_id }}" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Late">Late</option>
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit">Submit Attendance</button>
+      </form>
+    </main>
+  </body>
+</html>
+>>>>>>> 25d730d11150bf577b5f523f1c0f4df56bebcb62
