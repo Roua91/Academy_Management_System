@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
 from app.models import Course, Student, Attendance, Grade, Teacher, Enrollment
@@ -193,18 +193,23 @@ def grade_assessment():
 
 @teacher_routes.route('/view_grades', methods=['GET', 'POST'])
 def view_grades():
-    grades = []
-    assignment_name = ''
-    
+    grades = None  # To store query results
+    assignment_name = None
+
     if request.method == 'POST':
-        # Get the assignment name from the form
+        # Get the assignment name entered by the teacher
         assignment_name = request.form.get('assignment_name')
-        
-        # Query the grades filtered by the assignment name
-        grades = Grade.query.filter(Grade.assignment_name.ilike(f"%{assignment_name}%")).all()
-        
+
+        if not assignment_name:
+            flash('Please enter an assignment name!', 'danger')
+        else:
+            # Query the database to find grades for the specified assignment name
+            grades = db.session.query(Grade, Student).join(Student).filter(
+                Grade.assignment_name == assignment_name
+            ).all()
+
+            # If no grades are found, flash a warning message
+            if not grades:
+                flash(f'No grades found for assignment: {assignment_name}', 'warning')
+
     return render_template('teacher/view_grades.html', grades=grades, assignment_name=assignment_name)
-
-
-
-

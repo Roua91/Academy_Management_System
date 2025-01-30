@@ -137,14 +137,10 @@ def teacher_dashboard():
     return render_template('teacher/teacher_dashboard.html')
 
 
-
-
-@auth_routes.route('logout')
+# Logout Route
+@auth_routes.route('/logout')
+@login_required
 def logout():
-    # Clear the session or any user-specific data
-    session.pop('user_id', None)  # Remove user_id or any key you use to track user login
-    
-    # Redirect to the login page after logging out
-    return redirect(url_for('landing_routes.home'))  # Assuming 'auth.login' is the route for login page
-
-
+    logout_user()  # Use Flask-Login's logout_user for session cleanup
+    flash('You have been logged out successfully.', 'success')
+    return redirect(url_for('auth/logout.html'))

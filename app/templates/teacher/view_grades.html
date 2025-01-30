@@ -4,91 +4,66 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>View Grades</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-      }
-      .grades-container {
-        width: 80%;
-        margin: 20px auto;
-      }
-      .grades-record-table {
-        margin-top: 20px;
-      }
-      .grades-record-table th,
-      .grades-record-table td {
-        padding: 8px 15px;
-        border: 1px solid #ccc;
-      }
-      .grades-record-table th {
-        background-color: #f4f4f4;
-      }
-
-      /* Styling for the Back to Dashboard link as a button */
-      .back-button {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        text-decoration: none;
-        border-radius: 5px;
-        text-align: center;
-        margin-bottom: 20px;
-        width: fit-content;
-      }
-      .back-button:hover {
-        background-color: #0056b3;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    />
   </head>
   <body>
-    <header>
-      <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button"
-        >Back to Dashboard</a
-      >
-      <h1>View Grades</h1>
-    </header>
+    <div class="container mt-5">
+      <h1 class="mb-4">View Grades</h1>
 
-    <main class="grades-container">
-      <!-- Form for entering assignment name -->
-      <form method="POST">
-        <label for="assignment_name">Enter Assignment Name:</label>
-        <input
-          type="text"
-          name="assignment_name"
-          id="assignment_name"
-          required
-          value="{{ assignment_name if assignment_name else '' }}"
-        />
-        <button type="submit">View Grades</button>
+      <!-- Form for teacher to input the assignment name -->
+      <form method="POST" action="/view_grades">
+        <div class="mb-3">
+          <label for="assignment_name" class="form-label"
+            >Assignment Name</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="assignment_name"
+            name="assignment_name"
+            placeholder="Enter assignment name"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
       </form>
 
-      {% if assignment_name %} {% if grades %}
-      <div class="grades-record-table">
-        <h3>Grades for Assignment: {{ assignment_name }}</h3>
-        <table>
+      <!-- Display grades if available -->
+      {% if grades %}
+      <h2 class="mt-4">Grades for Assignment: "{{ assignment_name }}"</h2>
+      <table class="table table-bordered mt-3">
+        <thead>
           <tr>
             <th>Student ID</th>
             <th>Student Name</th>
+            <th>Course ID</th>
+            <th>Assignment Name</th>
             <th>Grade</th>
+            <th>Submission Date</th>
           </tr>
-          {% for grade in grades %}
+        </thead>
+        <tbody>
+          {% for grade, student in grades %}
           <tr>
-            <td>{{ grade.student.student_id }}</td>
-            <td>
-              {{ grade.student.first_name }} {{ grade.student.last_name }}
-            </td>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ grade.course_id }}</td>
+            <td>{{ grade.assignment_name }}</td>
             <td>{{ grade.grade }}</td>
+            <td>{{ grade.submission_date.strftime('%Y-%m-%d') }}</td>
           </tr>
           {% endfor %}
-        </table>
-      </div>
-      {% else %}
-      <p>No grades found for the selected assignment.</p>
-      {% endif %} {% else %}
-      <p>Please enter an assignment name to view grades.</p>
+        </tbody>
+      </table>
+      {% elif assignment_name %}
+      <!-- Show a message if no grades are found -->
+      <p class="mt-4 text-danger">
+        No grades found for assignment: "{{ assignment_name }}"
+      </p>
       {% endif %}
-    </main>
+    </div>
   </body>
 </html>

@@ -7,87 +7,31 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        text-align: center; /* Center-aligns text in the body */
-      }
-      header {
-        text-align: left; /* Aligns the "Back to Dashboard" button to the left */
-        margin: 20px;
       }
       .attendance-container {
         width: 80%;
         margin: 20px auto;
       }
-      h1 {
-        font-size: 36px; /* Larger header text */
-        margin-bottom: 20px;
-      }
-      h3 {
-        font-size: 24px; /* Larger subheader text */
+      .attendance-record-table {
         margin-top: 20px;
       }
-      p {
-        font-size: 18px; /* Larger paragraph text */
-      }
-      form {
-        margin: 20px 0;
-        font-size: 18px; /* Larger form label text */
-      }
-      label {
-        font-size: 18px;
-      }
-      input[type="date"] {
-        font-size: 16px;
-        padding: 5px;
-      }
-      button {
-        font-size: 18px;
-        padding: 10px 20px;
-        margin-left: 10px;
-      }
-      .attendance-record-table {
-        margin: 20px auto; /* Adds spacing and centers the table container */
-        width: auto; /* Ensures the table adapts to its content */
-      }
-      table {
-        margin: 0 auto; /* Centers the table itself */
-        border-collapse: collapse;
-        width: auto; /* Table will take just enough width for its content */
-      }
-      th,
-      td {
-        padding: 12px 20px; /* Larger cell padding */
-        font-size: 18px; /* Larger table text */
+      .attendance-record-table th,
+      .attendance-record-table td {
+        padding: 8px 15px;
         border: 1px solid #ccc;
-        text-align: center; /* Centers table content */
       }
-      th {
+      .attendance-record-table th {
         background-color: #f4f4f4;
-      }
-
-      /* Styling for the Back to Dashboard link as a button */
-      .back-button {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 15px 25px; /* Larger button padding */
-        font-size: 20px; /* Larger button text */
-        text-decoration: none;
-        border-radius: 5px;
-        text-align: center;
-      }
-      .back-button:hover {
-        background-color: #0056b3;
       }
     </style>
   </head>
   <body>
     <header>
-      <a href="{{ url_for('teacher.teacher_dashboard') }}" class="back-button"
-        >Back to Dashboard</a
-      >
-    </header>
-    <main class="attendance-container">
       <h1>View Attendance</h1>
+      <a href="{{ url_for('teacher.teacher_dashboard') }}">Back to Dashboard</a>
+    </header>
+
+    <main class="attendance-container">
       <!-- Form for selecting date -->
       <form method="POST">
         <label for="attendance_date">Select Date:</label>
@@ -101,11 +45,9 @@
         <button type="submit">View Attendance</button>
       </form>
 
-      {% if selected_date %}
       {% if attendance_records %}
-      <h3>Recorded Attendance for {{ selected_date }}:</h3>
-      <!-- Centered table -->
       <div class="attendance-record-table">
+        <h3>Recorded Attendance for {{ selected_date }}:</h3>
         <table>
           <tr>
             <th>Student ID</th>
@@ -125,9 +67,6 @@
       </div>
       {% else %}
       <p>No attendance records found for the selected date.</p>
-      {% endif %}
-      {% else %}
-      <p>Please select a date to view attendance.</p>
       {% endif %}
     </main>
   </body>

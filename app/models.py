@@ -33,7 +33,7 @@ class Student(db.Model):
     student_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     grade_level = db.Column(db.String(5), nullable=False)
-    grades = db.relationship('Grade', backref='student', lazy=True)
+
     # No need to redefine `user` as it's accessible via the `backref`
     @property
     def first_name(self):
@@ -77,8 +77,6 @@ class Course(db.Model):
     course_name = db.Column(db.String(100), nullable=False)
     grade_level = db.Column(db.String(5), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.teacher_id'), nullable=False)
-    # Relationship to Grade
-    grades = db.relationship('Grade', backref='course', lazy=True)
 
 # Enrollments model
 class Enrollment(db.Model):
@@ -109,6 +107,3 @@ class Grade(db.Model):
     grade = db.Column(db.String(10), nullable=False)
     #grade = db.Column(db.Float, nullable=False)
     submission_date = db.Column(db.Date, nullable=True)
-    
-    
-

@@ -10,9 +10,7 @@
 <body>
     <!-- Top Navigation Bar -->
     <header class="top-nav">
-        <div class="img-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="KD Academy Logo" class="logo-img">
-        </div>
+        <div class="logo">KD Academy</div>
         <div class="user-info">
             <span>Admins Name</span>
             <span>Admin</span>
@@ -27,7 +25,6 @@
             <li><a href="{{ url_for('admin_routes.students_management') }}">Manage Students</a></li>
             <li><a href="{{ url_for('admin_routes.teachers_management')}}" class="active">Manage Teachers</a></li>
             <li><a href="{{ url_for('admin_routes.courses_management') }}">Manage Courses</a></li>
-            <li><a href="{{ url_for('auth_routes.logout') }}" class="btn btn-danger">Logout</a></li> <!--Adding the logout button to the navigation-->
         </ul>
     </nav>
 
